@@ -301,6 +301,17 @@ function install_stats_brew_mac() {
     fi
 }
 
+function install_neovim_brew_mac() {
+    echo "Checking for Neovim..."
+    if brew list neovim &> /dev/null; then
+        echo "Neovim is already installed."
+    else
+        echo "Installing Neovim..."
+        brew install neovim && echo "Neovim is now installed."
+    fi
+
+}
+
 function install_rust_brew_mac() {
     echo "Checking for Rust..."
     if brew list rust &> /dev/null; then
@@ -359,6 +370,7 @@ case "$OS_TYPE" in
             install_gcc_brew_mac
             install_background_music
             install_nord_vpn_brew_mac
+            install_neovim_brew_mac
         fi
         install_warp_brew_mac
         echo "==============================="
