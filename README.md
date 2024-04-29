@@ -48,6 +48,7 @@ Currently Installs the following
 - Warp
 - Texshop
 - bitwarden
+- obsidian
 - Requires SUDO:
     - gcc (requires sudo, I've found...)
     - background music

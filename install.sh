@@ -129,6 +129,17 @@ function install_wget_brew_mac() {
     fi
 }
 
+# install obsidian via brew
+function install_obsidian_brew_mac() {
+    echo "Checking for obsidian..."
+    if brew list obsidian &> /dev/null; then
+        echo "obsidian is already installed."
+    else
+        echo "Installing obsidian..."
+        brew install --cask obsidian && echo "obsidian is now installed."
+    fi
+}
+
 # install rsync via brew
 function install_rsync_brew_mac() {
     echo "Checking for rsync..."
