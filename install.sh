@@ -179,6 +179,16 @@ function install_firefox_brew_mac() {
     fi
 }
 
+function install_discord_brew_mac() {
+    echo "Checking for discord..."
+    if brew list discord &> /dev/null; then
+        echo "discord is already installed."
+    else
+        echo "Installing discord..."
+        brew install discord && echo "discord is now installed."
+    fi
+}
+
 function install_openssh_brew_mac() {
     echo "Checking for openssh..."
     if brew list openssh &> /dev/null; then
@@ -195,22 +205,33 @@ function install_openssh_brew_mac() {
     fi
 }
 
+function install_vscode_mac() {
+    echo "Checking for Visual Studio Code..."
+    if "Visual Studio Code.app" in "$(ls /Applications)"; then
+        echo "Visual Studio Code is already installed."
+    elif "Visual Studio Code.app" in "$(ls $HOME/Applications)"; then
+        echo "Visual Studio Code is already installed."
+    else
+        echo "Installing Visual Studio Code..."
+        brew install --cask visual-studio-code && echo "Visual Studio Code is now installed."
+    fi
+}
+
 case "$OS_TYPE" in
     "mac")
         install_xcode_mac
         if [[ "$SHELL_TYPE" == "zsh" ]]; then
             install_oh_my_zsh
         fi
+        create_applications_dir_mac
         install_brew_mac
         install_gnu_utils_brew_mac
         install_wget_brew_mac
         install_pyenv_brew_mac
         install_ripgrep_brew_mac
         install_openssh_brew_mac
-        create_applications_dir_mac
-        if [[ "$SUDO_ACCESS" == "True" ]]; then
-            install_firefox_brew_mac
-        fi
+        install_firefox_brew_mac
+        install_vscode_mac
         echo "==============================="
         echo "Installation complete."
         echo "Please restart your terminal."

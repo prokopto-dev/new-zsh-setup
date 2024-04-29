@@ -3,6 +3,8 @@ A script, and supporting files, for setting up a new host with `zsh` in a way th
 
 Technically also works with `bash`, and will skip `oh-my-zsh` in that case.
 
+Handles both SUDO and non-sudo installations.
+
 ## Contents
 
 Currently Installs the following
@@ -26,6 +28,8 @@ Currently Installs the following
 - ripgrep
 - OpenSSH
 - Firefox
+- Discord
+- VSCode
 
 ## TODO
 
