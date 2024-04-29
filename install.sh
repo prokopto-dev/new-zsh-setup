@@ -103,7 +103,7 @@ function install_oh_my_zsh() {
 
 function install_gnu_utils_brew_mac() {
     echo "Checking for GNU Utils..."
-    for util in "gawk" "gsed" "grep" "findutils" "coreutils" "libtool";
+    for util in "gawk" "gsed" "grep" "findutils" "coreutils" "libtool" "gnu-indent" "gnu-getopt";
     do
         if brew list $util &> /dev/null; then
             echo "$util is already installed."
@@ -290,6 +290,17 @@ function install_stats_brew_mac() {
     fi
 }
 
+function install_rust_brew_mac() {
+    echo "Checking for Rust..."
+    if brew list rust &> /dev/null; then
+        echo "Rust is already installed."
+    else
+        echo "Installing Rust..."
+        brew install rust && echo "Rust is now installed."
+    fi
+
+}
+
 function install_texshop_brew_mac() {
     echo "Checking for TeXShop..."
     if brew list texshop &> /dev/null; then
@@ -330,6 +341,7 @@ case "$OS_TYPE" in
         install_discord_brew_mac
         install_bitwarden_brew_mac
         install_vscode_brew_mac
+        install_rust_brew_mac
         install_texshop_brew_mac
         install_stats_brew_mac
         if [[ "$SUDO_ACCESS" == "True" ]]; then
