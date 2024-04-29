@@ -10,6 +10,7 @@ Currently Installs the following
 ### Mac
 
 - XCode CLI Tools
+- Creates an Applications Directory In Home Dir
 - Oh-My-Zsh (If ZSH is primary shell)
 - Homebrew
 - GNU Utils
@@ -24,6 +25,7 @@ Currently Installs the following
 - Pyenv-virtualenv
 - ripgrep
 - OpenSSH
+- Firefox
 
 ## TODO
 

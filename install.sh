@@ -81,6 +81,10 @@ function install_brew_mac() {
             echo "Adding Homebrew to PATH..."
             echo "# Add Homebrew to PATH" >> $SHELL_RC_PATH
             echo "eval \"$($HOME/.homebrew/bin/brew shellenv)\"" >> $SHELL_RC_PATH
+            if [[ -d "$HOME/Applications" ]]; then
+                echo "Adding appdir optional to casks for homebrew"
+                echo "export HOMEBREW_CASK_OPTS=\"--appdir=$HOME/Applications\"" >> $SHELL_RC_PATH
+            fi
         fi
     fi
 }
@@ -105,7 +109,7 @@ function install_gnu_utils_brew_mac() {
             echo "$util is already installed."
         else
             echo "Installing $util..."
-            brew install $util
+            brew install $util && echo "$util is now installed."
             echo "Adding $util to PATH..."
             echo "# Add $util to PATH" >> $SHELL_RC_PATH
             echo "export PATH=\"$(brew --prefix)/opt/$util/libexec/gnubin:\$PATH\"" >> $SHELL_RC_PATH
@@ -121,7 +125,7 @@ function install_wget_brew_mac() {
         echo "wget is already installed."
     else
         echo "Installing wget..."
-        brew install wget
+        brew install wget && echo "wget is now installed."
     fi
 }
 
@@ -132,7 +136,7 @@ function install_pyenv_brew_mac() {
         echo "pyenv is already installed."
     else
         echo "Installing pyenv..."
-        brew install pyenv
+        brew install pyenv && echo "pyenv is now installed."
         echo "Adding pyenv shims to PATH..."
         echo "# Add pyenv shims to PATH" >> $SHELL_RC_PATH
         echo "export PATH=\"$(pyenv root)/shims:\$PATH\"" >> $SHELL_RC_PATH
@@ -143,7 +147,7 @@ function install_pyenv_brew_mac() {
         echo "pyenv-virtualenv is already installed."
     else
         echo "Installing pyenv-virtualenv..."
-        brew install pyenv-virtualenv
+        brew install pyenv-virtualenv && echo "pyenv-virtualenv is now installed."
     fi
 
 }
@@ -154,10 +158,26 @@ function install_ripgrep_brew_mac() {
         echo "ripgrep is already installed."
     else
         echo "Installing ripgrep..."
-        brew install ripgrep
+        brew install ripgrep && echo "ripgrep is now installed."
     fi
 }
 
+function create_applications_dir_mac() {
+    if [[ ! -d "$HOME/Applications" ]]; then
+        echo "Creating Applications directory..."
+        mkdir $HOME/Applications
+    fi
+}
+
+function install_firefox_brew_mac() {
+    echo "Checking for firefox..."
+    if brew list firefox &> /dev/null; then
+        echo "firefox is already installed."
+    else
+        echo "Installing firefox..."
+        brew install firefox && echo "firefox is now installed."
+    fi
+}
 
 function install_openssh_brew_mac() {
     echo "Checking for openssh..."
@@ -165,7 +185,7 @@ function install_openssh_brew_mac() {
         echo "openssh is already installed."
     else
         echo "Installing openssh..."
-        brew install openssh
+        brew install openssh && echo "openssh is now installed."
         # Check if brew path is in PATH, and if not, add it
         if [[ ! "$PATH" == *"$(brew --prefix)/bin"* ]]; then
             echo "Adding $(brew --prefix)/bin to PATH..."
@@ -187,6 +207,14 @@ case "$OS_TYPE" in
         install_pyenv_brew_mac
         install_ripgrep_brew_mac
         install_openssh_brew_mac
+        create_applications_dir_mac
+        if [[ "$SUDO_ACCESS" == "True" ]]; then
+            install_firefox_brew_mac
+        fi
+        echo "==============================="
+        echo "Installation complete."
+        echo "Please restart your terminal."
+        echo "==============================="
         ;;
     "linux")
         echo "Linux installation not supported yet."
