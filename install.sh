@@ -207,9 +207,7 @@ function install_openssh_brew_mac() {
 
 function install_vscode_brew_mac() {
     echo "Checking for Visual Studio Code..."
-    if [ -d " /Applications/Visual Studio Code.app" ]; then
-        echo "Visual Studio Code is already installed."
-    elif [ -d " $HOME/Applications/Visual Studio Code.app" ]; then
+    if brew list visual-studio-code &> /dev/null; then
         echo "Visual Studio Code is already installed."
     else
         echo "Installing Visual Studio Code..."
