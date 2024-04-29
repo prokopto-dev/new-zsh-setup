@@ -45,9 +45,13 @@ Currently Installs the following
 - Firefox
 - Discord
 - VSCode
-- gcc (requires sudo, I've found...)
-- background music
 - Warp
+- Texshop
+- bitwarden
+- Requires SUDO:
+    - gcc (requires sudo, I've found...)
+    - background music
+    - nordvpn
 
 ## To install applications if you don't have SUDO (MAC)
 

@@ -248,6 +248,58 @@ function install_background_music() {
 
 }
 
+function install_bitwarden_brew_mac() {
+    echo "Checking for Bitwarden..."
+    if brew list bitwarden &> /dev/null; then
+        echo "Bitwarden is already installed."
+    else
+        echo "Installing Bitwarden..."
+        brew install --cask bitwarden && echo "Bitwarden is now installed."
+    fi
+
+}
+
+function install_nord_vpn_brew_mac() {
+    echo "Checking for Nord VPN..."
+    if brew list nordvpn &> /dev/null; then
+        echo "Nord VPN is already installed."
+    else
+        echo "Installing Nord VPN..."
+        brew install --cask nordvpn && echo "Nord VPN is now installed."
+    fi
+}
+
+function install_brave_browser_brew_mac() {
+    echo "Checking for Brave Browser..."
+    if brew list brave-browser &> /dev/null; then
+        echo "Brave Browser is already installed."
+    else
+        echo "Installing Brave Browser..."
+        brew install --cask brave-browser && echo "Brave Browser is now installed."
+    fi
+
+}
+
+function install_stats_brew_mac() {
+    echo "Checking for Stats..."
+    if brew list stats &> /dev/null; then
+        echo "Stats is already installed."
+    else
+        echo "Installing Stats..."
+        brew install --cask stats && echo "Stats is now installed."
+    fi
+}
+
+function install_texshop_brew_mac() {
+    echo "Checking for TeXShop..."
+    if brew list texshop &> /dev/null; then
+        echo "TeXShop is already installed."
+    else
+        echo "Installing TeXShop..."
+        brew install --cask texshop && echo "TeXShop is now installed."
+    fi
+}
+
 function install_gcc_brew_mac() {
     echo "Checking for gcc..."
     if brew list gcc &> /dev/null; then
@@ -274,11 +326,16 @@ case "$OS_TYPE" in
         install_ripgrep_brew_mac
         install_openssh_brew_mac
         install_firefox_brew_mac
+        install_brave_browser_brew_mac
         install_discord_brew_mac
-        install_background_music
+        install_bitwarden_brew_mac
         install_vscode_brew_mac
+        install_texshop_brew_mac
+        install_stats_brew_mac
         if [[ "$SUDO_ACCESS" == "True" ]]; then
             install_gcc_brew_mac
+            install_background_music
+            install_nord_vpn_brew_mac
         fi
         install_warp_brew_mac
         echo "==============================="
