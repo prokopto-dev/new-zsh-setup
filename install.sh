@@ -205,11 +205,11 @@ function install_openssh_brew_mac() {
     fi
 }
 
-function install_vscode_mac() {
+function install_vscode_brew_mac() {
     echo "Checking for Visual Studio Code..."
-    if "Visual Studio Code.app" in "$(ls /Applications)"; then
+    if [ -d " /Applications/Visual Studio Code.app" ]; then
         echo "Visual Studio Code is already installed."
-    elif "Visual Studio Code.app" in "$(ls $HOME/Applications)"; then
+    elif [ -d " $HOME/Applications/Visual Studio Code.app" ]; then
         echo "Visual Studio Code is already installed."
     else
         echo "Installing Visual Studio Code..."
@@ -258,6 +258,7 @@ case "$OS_TYPE" in
         if [[ "$SUDO_ACCESS" == "True" ]]; then
             install_gcc_brew_mac
         fi
+        install_warp_brew_mac
         echo "==============================="
         echo "Installation complete."
         echo "Please restart your terminal."
