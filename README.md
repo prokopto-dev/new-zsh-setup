@@ -46,6 +46,7 @@ Currently Installs the following
 - Discord
 - VSCode
 - gcc (requires sudo, I've found...)
+- background music
 - Warp
 
 ## To install applications if you don't have SUDO (MAC)

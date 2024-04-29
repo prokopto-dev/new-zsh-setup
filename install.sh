@@ -237,6 +237,17 @@ function install_warp_brew_mac() {
 
 }
 
+function install_background_music() {
+    echo "Checking for Background Music..."
+    if brew list background-music &> /dev/null; then
+        echo "Background Music is already installed."
+    else
+        echo "Installing Background Music..."
+        brew install --cask background-music && echo "Background Music is now installed."
+    fi
+
+}
+
 function install_gcc_brew_mac() {
     echo "Checking for gcc..."
     if brew list gcc &> /dev/null; then
@@ -264,6 +275,7 @@ case "$OS_TYPE" in
         install_openssh_brew_mac
         install_firefox_brew_mac
         install_discord_brew_mac
+        install_background_music
         install_vscode_brew_mac
         if [[ "$SUDO_ACCESS" == "True" ]]; then
             install_gcc_brew_mac
