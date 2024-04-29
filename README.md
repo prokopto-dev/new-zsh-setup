@@ -5,6 +5,20 @@ Technically also works with `bash`, and will skip `oh-my-zsh` in that case.
 
 Handles both SUDO and non-sudo installations.
 
+## How to Run
+
+You can clone and run the `install.sh`
+
+```shell
+$ bash install.sh
+```
+
+Or you can run the following command without cloning:
+
+```shell
+$ sh -c "$(curl -fsSL https://raw.githubusercontent.com/prokopto-dev/new-zsh-setup/main/install.sh)"
+```
+
 ## Contents
 
 Currently Installs the following
@@ -31,6 +45,7 @@ Currently Installs the following
 - Discord
 - VSCode
 - gcc (requires sudo, I've found...)
+- Warp
 
 ## System Settings
 
