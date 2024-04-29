@@ -129,6 +129,17 @@ function install_wget_brew_mac() {
     fi
 }
 
+# install rsync via brew
+function install_rsync_brew_mac() {
+    echo "Checking for rsync..."
+    if brew list rsync &> /dev/null; then
+        echo "rsync is already installed."
+    else
+        echo "Installing rsync..."
+        brew install rsync && echo "rsync is now installed."
+    fi
+}
+
 # install pyenv and pyenv-virtualenv via brew
 function install_pyenv_brew_mac() {
     echo "Checking for pyenv..."
@@ -247,6 +258,7 @@ case "$OS_TYPE" in
         install_brew_mac
         install_gnu_utils_brew_mac
         install_wget_brew_mac
+        install_rsync_brew_mac
         install_pyenv_brew_mac
         install_ripgrep_brew_mac
         install_openssh_brew_mac

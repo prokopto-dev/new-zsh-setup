@@ -37,6 +37,7 @@ Currently Installs the following
     - coreutils
     - findutils
     - libtool
+    - rsync
 - Pyenv
 - Pyenv-virtualenv
 - ripgrep
@@ -46,6 +47,12 @@ Currently Installs the following
 - VSCode
 - gcc (requires sudo, I've found...)
 - Warp
+
+## To install applications if you don't have SUDO (MAC)
+
+This will make a `$HOME/Applications` folder for you on Mac; `brew install --cask` commands will install to this folder.
+
+You can also drag any `.dmg` Files into here and have them be installed as if installed in the original `/Applications` folder.
 
 ## System Settings
 
