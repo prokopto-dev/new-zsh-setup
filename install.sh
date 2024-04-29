@@ -217,6 +217,28 @@ function install_vscode_mac() {
     fi
 }
 
+function install_warp_brew_mac() {
+    echo "Checking for warp..."
+    if brew list warp &> /dev/null; then
+        echo "warp is already installed."
+    else
+        echo "Installing warp..."
+        brew install --cask warp && echo "warp is now installed."
+    fi
+
+}
+
+function install_gcc_brew_mac() {
+    echo "Checking for gcc..."
+    if brew list gcc &> /dev/null; then
+        echo "gcc is already installed."
+    else
+        echo "Installing gcc..."
+        brew install gcc && echo "gcc is now installed."
+    fi
+
+}
+
 case "$OS_TYPE" in
     "mac")
         install_xcode_mac
@@ -231,7 +253,11 @@ case "$OS_TYPE" in
         install_ripgrep_brew_mac
         install_openssh_brew_mac
         install_firefox_brew_mac
-        install_vscode_mac
+        install_discord_brew_mac
+        install_vscode_brew_mac
+        if [[ "$SUDO_ACCESS" == "True" ]]; then
+            install_gcc_brew_mac
+        fi
         echo "==============================="
         echo "Installation complete."
         echo "Please restart your terminal."

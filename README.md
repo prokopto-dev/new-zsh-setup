@@ -30,6 +30,35 @@ Currently Installs the following
 - Firefox
 - Discord
 - VSCode
+- gcc (requires sudo, I've found...)
+
+## System Settings
+
+These will go by category, only noting those that are to be changed from any sort of default.
+
+### Notifications
+
+Show Previews: When Unlocked
+
+Allow notifications when the display is sleeping: False
+
+Allow notifications when the screen is locked: False
+
+Allow notifications when mirroring or sharing display: False
+
+#### Application Notifications
+
+Turn off all other than:
+- Wallet
+- VPN Provider
+- Messages
+- Mail
+- Home
+- Find My
+- FaceTime
+- Discord
+- Calendar
+- App Store
 
 ## TODO
 
