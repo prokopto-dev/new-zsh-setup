@@ -10,10 +10,35 @@ Handles both SUDO and non-sudo installations.
 You can clone and run the `install.sh`
 
 ```shell
+$ git clone https://github.com/prokopto-dev/new-zsh-setup.git
+$ cd new-zsh-setup
 $ bash install.sh
 ```
 
+You can also pass some flags in:
+
+- `--warp` - Installs warp terminal emulator
+- `--emacs` - Installs emacs
+- `--alacritty` - Installs alacritty terminal emulator
+- `--discord` - Installs discord chat
+- `--stats` - Installs stats toolbar plugin for osx
+- `--vscode` - Installs vscode
+- `--rust` - Installs rust lang
+- `--brave` - Installs brave browser (chromium based)
+- `--firefox` - Installs firefox browser
+- `--bitwarden` - Installs bitwarden password manager (desktop)
+- `--nordvpn` - Installs nordvpn client
+- `--texshop` - Installs texshop latex editor suite
+- `--qmk` - Installs qmk keyboard firmware tools
+- `--neovim` - Installs neovim
+- `--all` - Installs all of the possible tools above
+
+---
+
 Or you can run the following command without cloning:
+
+> [!IMPORTANT]
+> This only installs the most basic tools; if you want it to auto install more complex stuff, run the clone command and pass flags in.
 
 ```shell
 $ sh -c "$(curl -fsSL https://raw.githubusercontent.com/prokopto-dev/new-zsh-setup/main/install.sh)"
