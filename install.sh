@@ -34,6 +34,7 @@ fi
 
 # Check for sudo access
 if [[ "$OS_TYPE" == "linux" ]]; then
+    export HOMEBREW_CASK_OPTS=""
     if groups | grep -q -w "sudo"; then
         echo "User has sudo access."
         SUDO_ACCESS="True"
@@ -44,6 +45,7 @@ elif [[ "$OS_TYPE" == "mac" ]]; then
     if groups | grep -q -w "admin" ; then
         echo "User has sudo access."
         SUDO_ACCESS="True"
+        export HOMEBREW_CASK_OPTS=""
     else
         echo "User does not have sudo access."
     fi
