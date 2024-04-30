@@ -4,6 +4,7 @@ SHELL_TYPE=""
 SHELL_RC_PATH=""
 OS_TYPE=""
 SUDO_ACCESS="False"
+export HOMEBREW_CASK_OPTS="--appdir=$HOME/Applications"
 
 # Check default shell
 if [[ "$SHELL" == "/bin/bash" ]]; then
@@ -66,13 +67,17 @@ function install_xcode_mac() {
 
 function install_brew_mac() {
     echo "Checking for Homebrew..."
-    if command -v brew &> /dev/null; then
-        echo "Homebrew is already installed."
-    else
         if [[ "$SUDO_ACCESS" == "True" ]]; then
+            if command -v brew &> /dev/null; then
+                echo "Homebrew is already installed."
+            else
             echo "Installing Homebrew..."
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            fi
         else
+            if [[ -d "$HOME/.homebrew" ]]; then
+                echo "Homebrew is already installed locally for non-sudo."
+            else
             echo "User does not have sudo access, installing Homebrew to $HOME/.homebrew"
             mkdir $HOME/.homebrew && curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C $HOME/.homebrew
             eval "$($HOME/.homebrew/bin/brew shellenv)"
@@ -85,8 +90,8 @@ function install_brew_mac() {
                 echo "Adding appdir optional to casks for homebrew"
                 echo "export HOMEBREW_CASK_OPTS=\"--appdir=$HOME/Applications\"" >> $SHELL_RC_PATH
             fi
+            fi
         fi
-    fi
 }
 
 function install_oh_my_zsh() {
