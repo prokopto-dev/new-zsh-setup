@@ -197,8 +197,7 @@ function install_git_delta_brew_mac() {
         echo "Installing git-delta..."
         brew install git-delta && echo "git-delta is now installed."
         echo "Adding git-delta to git config..."
-        git config --global core.pager "delta --dark --plus-color=\"#012800\" --minus-color=\"#340001\" --theme=\"Monokai Extended\" --line-numbers"
-        git config --global interactive.diffFilter "delta --color-only"
+        git config --global core.pager "delta --dark --line-numbers"
         git config --global delta.side-by-side true
     fi
 
@@ -257,7 +256,7 @@ function install_vscode_brew_mac() {
     fi
 }
 
-function install_warp_brew_mac() {
+function install_warp_brew_mac() { 
     echo "Checking for warp..."
     if brew list warp &> /dev/null; then
         echo "warp is already installed."
@@ -392,6 +391,7 @@ case "$OS_TYPE" in
         install_firefox_brew_mac
         install_brave_browser_brew_mac
         install_discord_brew_mac
+        install_git_delta_brew_mac
         install_bitwarden_brew_mac
         install_vscode_brew_mac
         install_rust_brew_mac
