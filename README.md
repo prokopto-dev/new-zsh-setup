@@ -49,6 +49,7 @@ Currently Installs the following
 - Texshop
 - bitwarden
 - obsidian
+- git-delta
 - Requires SUDO:
     - gcc (requires sudo, I've found...)
     - background music

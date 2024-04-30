@@ -189,6 +189,21 @@ function install_ripgrep_brew_mac() {
     fi
 }
 
+function install_git_delta_brew_mac() {
+    echo "Checking for git-delta..."
+    if brew list git-delta &> /dev/null; then
+        echo "git-delta is already installed."
+    else
+        echo "Installing git-delta..."
+        brew install git-delta && echo "git-delta is now installed."
+        echo "Adding git-delta to git config..."
+        git config --global core.pager "delta --dark --plus-color=\"#012800\" --minus-color=\"#340001\" --theme=\"Monokai Extended\" --line-numbers"
+        git config --global interactive.diffFilter "delta --color-only"
+        git config --global delta.side-by-side true
+    fi
+
+}
+
 function create_applications_dir_mac() {
     if [[ ! -d "$HOME/Applications" ]]; then
         echo "Creating Applications directory..."
