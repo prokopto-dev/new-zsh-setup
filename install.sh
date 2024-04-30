@@ -4,7 +4,62 @@ SHELL_TYPE=""
 SHELL_RC_PATH=""
 OS_TYPE=""
 SUDO_ACCESS="False"
+# Install flags
+EMACS_INSTALL="False"
+WARP_INSTALL="False"
+ALACRITTY_INSTALL="False"
+DISCORD_INSTALL="False"
+STATS_INSTALL="False"
+VSCODE_INSTALL="False"
+RUST_INSTALL="False"
+BRAVE_INSTALL="False"
+FIREFOX_INSTALL="False"
+BITWARDEN_INSTALL="False"
+NORDVPN_INSTALL="False"
+TEXSHOP_INSTALL="False"
+QMK_INSTALL="False"
+NEOVIM_INSTALL="False"
+
+# export HOMEBREW_CASK_OPTS is used to install casks to a custom directory
 export HOMEBREW_CASK_OPTS="--appdir=$HOME/Applications"
+
+# See if --emacs flag is passed
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --warp) WARP_INSTALL="True";;
+        --emacs) EMACS_INSTALL="True";;
+        --alacritty) ALACRITTY_INSTALL="True";;
+        --discord) DISCORD_INSTALL="True";;
+        --stats) STATS_INSTALL="True";;
+        --vscode) VSCODE_INSTALL="True";;
+        --rust) RUST_INSTALL="True";;
+        --brave) BRAVE_INSTALL="True";;
+        --firefox) FIREFOX_INSTALL="True";;
+        --bitwarden) BITWARDEN_INSTALL="True";;
+        --nordvpn) NORDVPN_INSTALL="True";;
+        --texshop) TEXSHOP_INSTALL="True";;
+        --qmk) QMK_INSTALL="True";;
+        --neovim) NEOVIM_INSTALL="True";;
+        --all) 
+            WARP_INSTALL="True";
+            EMACS_INSTALL="True";
+            ALACRITTY_INSTALL="True";
+            DISCORD_INSTALL="True";
+            STATS_INSTALL="True";
+            VSCODE_INSTALL="True";
+            RUST_INSTALL="True";
+            BRAVE_INSTALL="True";
+            FIREFOX_INSTALL="True";
+            BITWARDEN_INSTALL="True";
+            NORDVPN_INSTALL="True";
+            TEXSHOP_INSTALL="True";
+            QMK_INSTALL="True";
+            NEOVIM_INSTALL="True";
+            ;;
+        *) echo "Unknown parameter passed: $1"; exit 1;;
+    esac
+    shift
+done
 
 # Check default shell
 if [[ "$SHELL" == "/bin/bash" ]]; then
@@ -365,6 +420,27 @@ function install_gcc_brew_mac() {
 
 }
 
+function install_emacs_brew_mac() {
+    echo "Checking for emacs..."
+    if brew list emacs &> /dev/null; then
+        echo "emacs is already installed."
+    else
+        echo "Installing emacs..."
+        brew install emacs && echo "emacs is now installed."
+    fi
+
+}
+
+function install_alacritty_brew_mac() {
+    echo "Checking for alacritty..."
+    if brew list alacritty &> /dev/null; then
+        echo "alacritty is already installed."
+    else
+        echo "Installing alacritty..."
+        brew install alacritty && echo "alacritty is now installed."
+    fi
+
+}
 function install_qmk_toolbox_mac() {
     echo "Checking for qmk-toolbox..."
     if brew list qmk-toolbox &> /dev/null; then
@@ -390,26 +466,59 @@ case "$OS_TYPE" in
         install_pyenv_brew_mac
         install_ripgrep_brew_mac
         install_openssh_brew_mac
-        install_firefox_brew_mac
-        install_brave_browser_brew_mac
-        install_discord_brew_mac
+        if [[ "$EMACS_INSTALL" == "True" ]]; then
+            install_emacs_brew_mac
+        fi
+        if [[ "$WARP_INSTALL" == "True" ]]; then
+            install_warp_brew_mac
+        fi
+        if [[ "$ALACRITTY_INSTALL" == "True" ]]; then
+            install_alacritty_brew_mac
+        fi
+        if [[ "$DISCORD_INSTALL" == "True" ]]; then
+            install_discord_brew_mac
+        fi
+        if [[ "$FIREFOX_INSTALL" == "True" ]]; then
+            install_firefox_brew_mac
+        fi
+        if [[ "$VSCODE_INSTALL" == "True" ]]; then
+            install_vscode_brew_mac
+        fi
+        if [[ "$BITWARDEN_INSTALL" == "True" ]]; then
+            install_bitwarden_brew_mac
+        fi
+        if [[ "$TEXSHOP_INSTALL" == "True" ]]; then
+            install_texshop_brew_mac
+        fi
+        if [[ "$STATS_INSTALL" == "True" ]]; then
+            install_stats_brew_mac
+        fi
+        if [[ "$BRAVE_INSTALL" == "True" ]]; then
+            install_brave_browser_brew_mac
+        fi
+        if [[ "$RUST_INSTALL" == "True" ]]; then
+            install_rust_brew_mac
+        fi
         install_git_delta_brew_mac
-        install_bitwarden_brew_mac
-        install_vscode_brew_mac
-        install_rust_brew_mac
-        install_texshop_brew_mac
-        install_stats_brew_mac
         if [[ "$SUDO_ACCESS" == "True" ]]; then
             install_gcc_brew_mac
             install_background_music
-            install_nord_vpn_brew_mac
-            install_neovim_brew_mac
-            install_qmk_toolbox_mac
+            if [[ "$NORDVPN_INSTALL" == "True" ]]; then
+                install_nord_vpn_brew_mac
+            fi
+            if [[ "$NEOVIM_INSTALL" == "True" ]]; then
+                install_neovim_brew_mac
+            fi
+            if [[ "$QMK_INSTALL" == "True" ]]; then
+                install_qmk_toolbox_mac
+            fi
         fi
         install_warp_brew_mac
         echo "==============================="
         echo "Installation complete."
         echo "Please restart your terminal."
+        echo "Or at the very least run the following command:"
+        echo "source $SHELL_RC_PATH"
         echo "==============================="
         ;;
     "linux")
@@ -420,6 +529,5 @@ case "$OS_TYPE" in
         exit 1
         ;;
 esac
-source $SHELL_RC_PATH
 exit 0
 
