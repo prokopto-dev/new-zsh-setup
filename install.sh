@@ -420,6 +420,6 @@ case "$OS_TYPE" in
         exit 1
         ;;
 esac
-
+source $SHELL_RC_PATH
 exit 0
 
