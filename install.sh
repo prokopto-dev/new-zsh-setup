@@ -344,6 +344,17 @@ function install_gcc_brew_mac() {
 
 }
 
+function install_qmk_toolbox_mac() {
+    echo "Checking for qmk-toolbox..."
+    if brew list qmk-toolbox &> /dev/null; then
+        echo "QMK Toolbox is already installed."
+    else
+        echo "Installing qmk-toolbox..."
+        brew install --cask qmk-toolbox && echo "qmk-toolbox is now installed."
+    fi
+
+}
+
 case "$OS_TYPE" in
     "mac")
         install_xcode_mac
@@ -371,6 +382,7 @@ case "$OS_TYPE" in
             install_background_music
             install_nord_vpn_brew_mac
             install_neovim_brew_mac
+            install_qmk_toolbox_mac
         fi
         install_warp_brew_mac
         echo "==============================="
