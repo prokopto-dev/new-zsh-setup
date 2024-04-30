@@ -427,6 +427,7 @@ function install_emacs_brew_mac() {
     else
         echo "Installing emacs..."
         brew install emacs && echo "emacs is now installed."
+        brew services start emacs
     fi
 
 }
