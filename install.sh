@@ -55,6 +55,7 @@ while [[ "$#" -gt 0 ]]; do
             BITWARDEN_INSTALL="True";
             NORDVPN_INSTALL="True";
             TEXSHOP_INSTALL="True";
+            TOOT_INSTALL="True";
             QMK_INSTALL="True";
             NEOVIM_INSTALL="True";
             ;;
