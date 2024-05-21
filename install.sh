@@ -18,6 +18,7 @@ BITWARDEN_INSTALL="False"
 NORDVPN_INSTALL="False"
 TEXSHOP_INSTALL="False"
 QMK_INSTALL="False"
+TOOT_INSTALL="False"
 NEOVIM_INSTALL="False"
 
 # export HOMEBREW_CASK_OPTS is used to install casks to a custom directory
@@ -39,6 +40,7 @@ while [[ "$#" -gt 0 ]]; do
         --nordvpn) NORDVPN_INSTALL="True";;
         --texshop) TEXSHOP_INSTALL="True";;
         --qmk) QMK_INSTALL="True";;
+        --toot) TOOT_INSTALL="True";;
         --neovim) NEOVIM_INSTALL="True";;
         --all) 
             WARP_INSTALL="True";
@@ -199,6 +201,17 @@ function install_obsidian_brew_mac() {
     else
         echo "Installing obsidian..."
         brew install --cask obsidian && echo "obsidian is now installed."
+    fi
+}
+
+# install toot via brew
+function install_toot_brew_mac() {
+    echo "Checking for toot..."
+    if brew list toot &> /dev/null; then
+        echo "toot is already installed."
+    else
+        echo "Installing toot..."
+        brew install toot && echo "toot is now installed."
     fi
 }
 

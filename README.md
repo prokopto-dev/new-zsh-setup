@@ -31,6 +31,7 @@ You can also pass some flags in:
 - `--texshop` - Installs texshop latex editor suite
 - `--qmk` - Installs qmk keyboard firmware tools
 - `--neovim` - Installs neovim
+- `--toot` - Installs toot (mastodon cli)
 - `--all` - Installs all of the possible tools above
 
 ---
