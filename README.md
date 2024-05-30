@@ -32,6 +32,7 @@ You can also pass some flags in:
 - `--qmk` - Installs qmk keyboard firmware tools
 - `--neovim` - Installs neovim
 - `--toot` - Installs toot (mastodon cli)
+- `--raycast` - Installs raycast (replacement for Spotlight on mac)
 - `--all` - Installs all of the possible tools above
 
 ---

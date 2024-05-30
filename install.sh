@@ -20,6 +20,7 @@ TEXSHOP_INSTALL="False"
 QMK_INSTALL="False"
 TOOT_INSTALL="False"
 NEOVIM_INSTALL="False"
+RAYCAST_INSTALL="False"
 
 # export HOMEBREW_CASK_OPTS is used to install casks to a custom directory
 export HOMEBREW_CASK_OPTS="--appdir=$HOME/Applications"
@@ -42,6 +43,7 @@ while [[ "$#" -gt 0 ]]; do
         --qmk) QMK_INSTALL="True";;
         --toot) TOOT_INSTALL="True";;
         --neovim) NEOVIM_INSTALL="True";;
+        --raycast) RAYCAST_INSTALL="True";;
         --all) 
             WARP_INSTALL="True";
             EMACS_INSTALL="True";
@@ -58,6 +60,7 @@ while [[ "$#" -gt 0 ]]; do
             TOOT_INSTALL="True";
             QMK_INSTALL="True";
             NEOVIM_INSTALL="True";
+            RAYCAST_INSTALL="True";
             ;;
         *) echo "Unknown parameter passed: $1"; exit 1;;
     esac
@@ -164,6 +167,16 @@ function install_oh_my_zsh() {
         # Change the default prompt in oh my zsh to gianu
         sed -i 's/robbyrussell/gianu/g' $HOME/.zshrc
     fi
+}
+
+function install_raycast_brew_mac() {
+    echo "Checking for Raycast..."
+        if brew list raycast &> /dev/null; then
+            echo "raycast is already installed."
+        else
+            echo "Installing raycast..."
+            brew install $util && echo "raycast is now installed."
+        fi
 }
 
 function install_gnu_utils_brew_mac() {
@@ -513,6 +526,9 @@ case "$OS_TYPE" in
         fi
         if [[ "$RUST_INSTALL" == "True" ]]; then
             install_rust_brew_mac
+        fi
+        if [[ "$RAYCAST_INSTALL" == "True" ]]; then
+            install_raycast_brew_mac
         fi
         install_git_delta_brew_mac
         if [[ "$SUDO_ACCESS" == "True" ]]; then
