@@ -4,23 +4,12 @@ SHELL_TYPE=""
 SHELL_RC_PATH=""
 OS_TYPE=""
 SUDO_ACCESS="False"
-# Install flags
-EMACS_INSTALL="False"
-WARP_INSTALL="False"
-ALACRITTY_INSTALL="False"
-DISCORD_INSTALL="False"
-STATS_INSTALL="False"
-VSCODE_INSTALL="False"
-RUST_INSTALL="False"
-BRAVE_INSTALL="False"
-FIREFOX_INSTALL="False"
-BITWARDEN_INSTALL="False"
-NORDVPN_INSTALL="False"
-TEXSHOP_INSTALL="False"
-QMK_INSTALL="False"
-TOOT_INSTALL="False"
-NEOVIM_INSTALL="False"
-RAYCAST_INSTALL="False"
+
+# RCFiles Folder For Subfiles
+RCFILES_PATH="$HOME/.rcfiles"
+
+# Install List For Flags with defaults
+local INSTALL_LIST="wget rsync pyenv ripgrep git-delta openssh gnu_utils"
 
 # export HOMEBREW_CASK_OPTS is used to install casks to a custom directory
 export HOMEBREW_CASK_OPTS="--appdir=$HOME/Applications"
@@ -28,39 +17,39 @@ export HOMEBREW_CASK_OPTS="--appdir=$HOME/Applications"
 # See if --emacs flag is passed
 while [[ "$#" -gt 0 ]]; do
     case $1 in
-        --warp) WARP_INSTALL="True";;
-        --emacs) EMACS_INSTALL="True";;
-        --alacritty) ALACRITTY_INSTALL="True";;
-        --discord) DISCORD_INSTALL="True";;
-        --stats) STATS_INSTALL="True";;
-        --vscode) VSCODE_INSTALL="True";;
-        --rust) RUST_INSTALL="True";;
-        --brave) BRAVE_INSTALL="True";;
-        --firefox) FIREFOX_INSTALL="True";;
-        --bitwarden) BITWARDEN_INSTALL="True";;
-        --nordvpn) NORDVPN_INSTALL="True";;
-        --texshop) TEXSHOP_INSTALL="True";;
-        --qmk) QMK_INSTALL="True";;
-        --toot) TOOT_INSTALL="True";;
-        --neovim) NEOVIM_INSTALL="True";;
-        --raycast) RAYCAST_INSTALL="True";;
+        --warp) INSTALL_LIST="$INSTALL_LIST warp";;
+        --emacs) INSTALL_LIST="$INSTALL_LIST emacs";;
+        --alacritty) INSTALL_LIST="$INSTALL_LIST alacritty";;
+        --discord) INSTALL_LIST="$INSTALL_LIST discord";;
+        --stats) INSTALL_LIST="$INSTALL_LIST stats";;
+        --vscode) INSTALL_LIST="$INSTALL_LIST visual-studio-code";;
+        --rust) INSTALL_LIST="$INSTALL_LIST rust";;
+        --brave) INSTALL_LIST="$INSTALL_LIST brave";;
+        --firefox) INSTALL_LIST="$INSTALL_LIST firefox";;
+        --bitwarden) INSTALL_LIST="$INSTALL_LIST bitwarden";;
+        --nordvpn) INSTALL_LIST="$INSTALL_LIST nordvpn";;
+        --texshop) INSTALL_LIST="$INSTALL_LIST texshop";;
+        --qmk) INSTALL_LIST="$INSTALL_LIST qmk-toolbox";;
+        --toot) INSTALL_LIST="$INSTALL_LIST toot";;
+        --neovim) INSTALL_LIST="$INSTALL_LIST neovim";;
+        --raycast) INSTALL_LIST="$INSTALL_LIST raycast";;
         --all) 
-            WARP_INSTALL="True";
-            EMACS_INSTALL="True";
-            ALACRITTY_INSTALL="True";
-            DISCORD_INSTALL="True";
-            STATS_INSTALL="True";
-            VSCODE_INSTALL="True";
-            RUST_INSTALL="True";
-            BRAVE_INSTALL="True";
-            FIREFOX_INSTALL="True";
-            BITWARDEN_INSTALL="True";
-            NORDVPN_INSTALL="True";
-            TEXSHOP_INSTALL="True";
-            TOOT_INSTALL="True";
-            QMK_INSTALL="True";
-            NEOVIM_INSTALL="True";
-            RAYCAST_INSTALL="True";
+            INSTALL_LIST="$INSTALL_LIST warp";
+            INSTALL_LIST="$INSTALL_LIST emacs";
+            INSTALL_LIST="$INSTALL_LIST alacritty";
+            INSTALL_LIST="$INSTALL_LIST discord";
+            INSTALL_LIST="$INSTALL_LIST stats";
+            INSTALL_LIST="$INSTALL_LIST visual-studio-code";
+            INSTALL_LIST="$INSTALL_LIST rust";
+            INSTALL_LIST="$INSTALL_LIST brave";
+            INSTALL_LIST="$INSTALL_LIST firefox";
+            INSTALL_LIST="$INSTALL_LIST bitwarden";
+            INSTALL_LIST="$INSTALL_LIST nordvpn";
+            INSTALL_LIST="$INSTALL_LIST texshop";
+            INSTALL_LIST="$INSTALL_LIST qmk-toolbox";
+            INSTALL_LIST="$INSTALL_LIST toot";
+            INSTALL_LIST="$INSTALL_LIST neovim";
+            INSTALL_LIST="$INSTALL_LIST raycast";
             ;;
         *) echo "Unknown parameter passed: $1"; exit 1;;
     esac
@@ -68,11 +57,11 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # Check default shell
-if [[ "$SHELL" == "/bin/bash" ]]; then
+if [[ "$SHELL" == *"bash" ]]; then
     echo "Bash is the default shell."
     SHELL_TYPE="bash"
     SHELL_RC_PATH="$HOME/.bashrc"
-elif [[ "$SHELL" == "/bin/zsh" ]]; then
+elif [[ "$SHELL" == *"zsh" ]]; then
     echo "Zsh is the default shell."
     SHELL_TYPE="zsh"
     SHELL_RC_PATH="$HOME/.zshrc"
@@ -113,7 +102,7 @@ elif [[ "$OS_TYPE" == "mac" ]]; then
 fi
 
 # Install XCode Command Line Tools If Possible
-function install_xcode_mac() {
+install_xcode_mac() {
     echo "Checking for XCode Command Line Tools..."
     if xcode-select -p &> /dev/null; then
         echo "XCode Command Line Tools are already installed."
@@ -128,7 +117,7 @@ function install_xcode_mac() {
     fi
 }
 
-function install_brew_mac() {
+install_brew_mac() {
     echo "Checking for Homebrew..."
         if [[ "$SUDO_ACCESS" == "True" ]]; then
             if command -v brew &> /dev/null; then
@@ -157,7 +146,83 @@ function install_brew_mac() {
         fi
 }
 
-function install_oh_my_zsh() {
+setup_rc_folders() {
+    if [[ ! -d "$HOME/.rcfiles" ]]; then
+        echo "Creating .rcfiles directory..."
+        mkdir -p $HOME/.rcfiles
+    fi
+}
+
+create_applications_dir_mac() {
+    if [[ ! -d "$HOME/Applications" ]]; then
+        echo "Creating Applications directory..."
+        mkdir $HOME/Applications
+    fi
+}
+
+install_brew_app() {
+    # Format for input is install_brew_app "app_name" "extra_arg1" "extra_arg2"...
+    # Valid extra args are:
+    # cask - installs the app as a cask
+    # gnu - installs the app as a gnu utility
+    # pyenv - installs the app as a pyenv utility
+    # service - installs the app as a service
+    # --- Example Usage ---
+    # install_brew_app "obsidian" "cask"
+    # install_brew_app "gcc" "gnu"
+    # install_brew_app "pyenv" "pyenv"
+    # install_brew_app "emacs" "service"
+    local APP="$1"
+    local cask_arg=""
+    local GNU_FLAG="False"
+    local PYENV_FLAG="False"
+    local SERVICE_FLAG="False"
+    while [[ "$#" -gt 1 ]]; do
+        case $1 in
+            cask) cask_arg="--cask";;
+            gnu) GNU_FLAG="True";;
+            pyenv) PYENV_FLAG="True";;
+            service) SERVICE_FLAG="True";;
+            *) ;;
+        esac
+        shift
+    done
+    if [[ ! "$PATH" == *"$(brew --prefix)/bin"* ]]; then
+            # grep shell rc file for brew path, if not found, add it
+            if ! grep -q "export PATH=\"$(brew --prefix)/bin:\$PATH\"" $SHELL_RC_PATH; then
+                echo "Adding $(brew --prefix)/bin to PATH..."
+                echo "# Add Homebrew to PATH" >> $SHELL_RC_PATH
+                echo "export PATH=\"$(brew --prefix)/bin:\$PATH\"" >> $SHELL_RC_PATH
+            fi
+    fi
+    if brew list $APP &> /dev/null; then
+        echo "$APP is already installed."
+    else
+        echo "Installing $APP..."
+        brew install $cask_arg $APP && echo "$APP is now installed."
+        if [[ "$GNU_FLAG" == "True" ]]; then 
+            echo "export PATH=\"$(brew --prefix)/opt/$APP/libexec/gnubin:\$PATH\"" >> $RCFILES_PATH/gnurc
+            echo "export MANPATH=\"$(brew --prefix)/opt/$APP/libexec/gnuman:\$MANPATH\"" >> $RCFILES_PATH/gnurc
+            # check if gnurc is already imported by shell rc file
+            if ! grep -q "source $RCFILES_PATH/gnurc" $SHELL_RC_PATH; then
+                echo "source $RCFILES_PATH/gnurc" >> $SHELL_RC_PATH
+            fi
+        elif [[ "$PYENV_FLAG" == "True"]]; then
+            echo "Adding pyenv shims to PATH..."
+            echo "export PATH=\"$(pyenv root)/shims:\$PATH\"" >> $RCFILES_PATH/pyenvrc
+            # check if pyenvrc is already imported by shell rc file
+            if ! grep -q "source $RCFILES_PATH/pyenvrc" $SHELL_RC_PATH; then
+                echo "source $RCFILES_PATH/pyenvrc" >> $SHELL_RC_PATH
+            fi
+        fi
+        elif [[ "$SERVICE_FLAG" == "True" ]]; then
+            echo "Starting $APP service..."
+            brew services start $APP
+        fi
+    fi
+}
+
+install_oh_my_zsh() {
     echo "Checking for Oh My Zsh..."
     if [ -d "$HOME/.oh-my-zsh" ]; then
         echo "Oh My Zsh is already installed."
@@ -169,317 +234,6 @@ function install_oh_my_zsh() {
     fi
 }
 
-function install_raycast_brew_mac() {
-    echo "Checking for Raycast..."
-        if brew list raycast &> /dev/null; then
-            echo "raycast is already installed."
-        else
-            echo "Installing raycast..."
-            brew install $util && echo "raycast is now installed."
-        fi
-}
-
-function install_gnu_utils_brew_mac() {
-    echo "Checking for GNU Utils..."
-    for util in "gawk" "gsed" "grep" "findutils" "coreutils" "libtool" "gnu-indent" "gnu-getopt";
-    do
-        if brew list $util &> /dev/null; then
-            echo "$util is already installed."
-        else
-            echo "Installing $util..."
-            brew install $util && echo "$util is now installed."
-            echo "Adding $util to PATH..."
-            echo "# Add $util to PATH" >> $SHELL_RC_PATH
-            echo "export PATH=\"$(brew --prefix)/opt/$util/libexec/gnubin:\$PATH\"" >> $SHELL_RC_PATH
-            echo "export MANPATH=\"$(brew --prefix)/opt/$util/libexec/gnuman:\$MANPATH\"" >> $SHELL_RC_PATH
-        fi
-    done
-}
-
-# install wget via brew
-function install_wget_brew_mac() {
-    echo "Checking for wget..."
-    if brew list wget &> /dev/null; then
-        echo "wget is already installed."
-    else
-        echo "Installing wget..."
-        brew install wget && echo "wget is now installed."
-    fi
-}
-
-# install obsidian via brew
-function install_obsidian_brew_mac() {
-    echo "Checking for obsidian..."
-    if brew list obsidian &> /dev/null; then
-        echo "obsidian is already installed."
-    else
-        echo "Installing obsidian..."
-        brew install --cask obsidian && echo "obsidian is now installed."
-    fi
-}
-
-# install toot via brew
-function install_toot_brew_mac() {
-    echo "Checking for toot..."
-    if brew list toot &> /dev/null; then
-        echo "toot is already installed."
-    else
-        echo "Installing toot..."
-        brew install toot && echo "toot is now installed."
-    fi
-}
-
-# install rsync via brew
-function install_rsync_brew_mac() {
-    echo "Checking for rsync..."
-    if brew list rsync &> /dev/null; then
-        echo "rsync is already installed."
-    else
-        echo "Installing rsync..."
-        brew install rsync && echo "rsync is now installed."
-    fi
-}
-
-# install pyenv and pyenv-virtualenv via brew
-function install_pyenv_brew_mac() {
-    echo "Checking for pyenv..."
-    if brew list pyenv &> /dev/null; then
-        echo "pyenv is already installed."
-    else
-        echo "Installing pyenv..."
-        brew install pyenv && echo "pyenv is now installed."
-        echo "Adding pyenv shims to PATH..."
-        echo "# Add pyenv shims to PATH" >> $SHELL_RC_PATH
-        echo "export PATH=\"$(pyenv root)/shims:\$PATH\"" >> $SHELL_RC_PATH
-    fi
-
-    echo "Checking for pyenv-virtualenv..."
-    if brew list pyenv-virtualenv &> /dev/null; then
-        echo "pyenv-virtualenv is already installed."
-    else
-        echo "Installing pyenv-virtualenv..."
-        brew install pyenv-virtualenv && echo "pyenv-virtualenv is now installed."
-    fi
-
-}
-
-function install_ripgrep_brew_mac() {
-    echo "Checking for ripgrep..."
-    if brew list ripgrep &> /dev/null; then
-        echo "ripgrep is already installed."
-    else
-        echo "Installing ripgrep..."
-        brew install ripgrep && echo "ripgrep is now installed."
-    fi
-}
-
-function install_git_delta_brew_mac() {
-    echo "Checking for git-delta..."
-    if brew list git-delta &> /dev/null; then
-        echo "git-delta is already installed."
-    else
-        echo "Installing git-delta..."
-        brew install git-delta && echo "git-delta is now installed."
-        echo "Adding git-delta to git config..."
-        git config --global core.pager "delta --dark --line-numbers"
-        git config --global delta.side-by-side true
-    fi
-
-}
-
-function create_applications_dir_mac() {
-    if [[ ! -d "$HOME/Applications" ]]; then
-        echo "Creating Applications directory..."
-        mkdir $HOME/Applications
-    fi
-}
-
-function install_firefox_brew_mac() {
-    echo "Checking for firefox..."
-    if brew list firefox &> /dev/null; then
-        echo "firefox is already installed."
-    else
-        echo "Installing firefox..."
-        brew install firefox && echo "firefox is now installed."
-    fi
-}
-
-function install_discord_brew_mac() {
-    echo "Checking for discord..."
-    if brew list discord &> /dev/null; then
-        echo "discord is already installed."
-    else
-        echo "Installing discord..."
-        brew install discord && echo "discord is now installed."
-    fi
-}
-
-function install_openssh_brew_mac() {
-    echo "Checking for openssh..."
-    if brew list openssh &> /dev/null; then
-        echo "openssh is already installed."
-    else
-        echo "Installing openssh..."
-        brew install openssh && echo "openssh is now installed."
-        # Check if brew path is in PATH, and if not, add it
-        if [[ ! "$PATH" == *"$(brew --prefix)/bin"* ]]; then
-            echo "Adding $(brew --prefix)/bin to PATH..."
-            echo "# Add Homebrew to PATH" >> $SHELL_RC_PATH
-            echo "export PATH=\"$(brew --prefix)/bin:\$PATH\"" >> $SHELL_RC_PATH
-        fi
-    fi
-}
-
-function install_vscode_brew_mac() {
-    echo "Checking for Visual Studio Code..."
-    if brew list visual-studio-code &> /dev/null; then
-        echo "Visual Studio Code is already installed."
-    else
-        echo "Installing Visual Studio Code..."
-        brew install --cask visual-studio-code && echo "Visual Studio Code is now installed."
-    fi
-}
-
-function install_warp_brew_mac() { 
-    echo "Checking for warp..."
-    if brew list warp &> /dev/null; then
-        echo "warp is already installed."
-    else
-        echo "Installing warp..."
-        brew install --cask warp && echo "warp is now installed."
-    fi
-
-}
-
-function install_background_music() {
-    echo "Checking for Background Music..."
-    if brew list background-music &> /dev/null; then
-        echo "Background Music is already installed."
-    else
-        echo "Installing Background Music..."
-        brew install --cask background-music && echo "Background Music is now installed."
-    fi
-
-}
-
-function install_bitwarden_brew_mac() {
-    echo "Checking for Bitwarden..."
-    if brew list bitwarden &> /dev/null; then
-        echo "Bitwarden is already installed."
-    else
-        echo "Installing Bitwarden..."
-        brew install --cask bitwarden && echo "Bitwarden is now installed."
-    fi
-
-}
-
-function install_nord_vpn_brew_mac() {
-    echo "Checking for Nord VPN..."
-    if brew list nordvpn &> /dev/null; then
-        echo "Nord VPN is already installed."
-    else
-        echo "Installing Nord VPN..."
-        brew install --cask nordvpn && echo "Nord VPN is now installed."
-    fi
-}
-
-function install_brave_browser_brew_mac() {
-    echo "Checking for Brave Browser..."
-    if brew list brave-browser &> /dev/null; then
-        echo "Brave Browser is already installed."
-    else
-        echo "Installing Brave Browser..."
-        brew install --cask brave-browser && echo "Brave Browser is now installed."
-    fi
-
-}
-
-function install_stats_brew_mac() {
-    echo "Checking for Stats..."
-    if brew list stats &> /dev/null; then
-        echo "Stats is already installed."
-    else
-        echo "Installing Stats..."
-        brew install --cask stats && echo "Stats is now installed."
-    fi
-}
-
-function install_neovim_brew_mac() {
-    echo "Checking for Neovim..."
-    if brew list neovim &> /dev/null; then
-        echo "Neovim is already installed."
-    else
-        echo "Installing Neovim..."
-        brew install neovim && echo "Neovim is now installed."
-    fi
-
-}
-
-function install_rust_brew_mac() {
-    echo "Checking for Rust..."
-    if brew list rust &> /dev/null; then
-        echo "Rust is already installed."
-    else
-        echo "Installing Rust..."
-        brew install rust && echo "Rust is now installed."
-    fi
-
-}
-
-function install_texshop_brew_mac() {
-    echo "Checking for TeXShop..."
-    if brew list texshop &> /dev/null; then
-        echo "TeXShop is already installed."
-    else
-        echo "Installing TeXShop..."
-        brew install --cask texshop && echo "TeXShop is now installed."
-    fi
-}
-
-function install_gcc_brew_mac() {
-    echo "Checking for gcc..."
-    if brew list gcc &> /dev/null; then
-        echo "gcc is already installed."
-    else
-        echo "Installing gcc..."
-        brew install gcc && echo "gcc is now installed."
-    fi
-
-}
-
-function install_emacs_brew_mac() {
-    echo "Checking for emacs..."
-    if brew list emacs &> /dev/null; then
-        echo "emacs is already installed."
-    else
-        echo "Installing emacs..."
-        brew install emacs && echo "emacs is now installed."
-        brew services start emacs
-    fi
-
-}
-
-function install_alacritty_brew_mac() {
-    echo "Checking for alacritty..."
-    if brew list alacritty &> /dev/null; then
-        echo "alacritty is already installed."
-    else
-        echo "Installing alacritty..."
-        brew install alacritty && echo "alacritty is now installed."
-    fi
-
-}
-function install_qmk_toolbox_mac() {
-    echo "Checking for qmk-toolbox..."
-    if brew list qmk-toolbox &> /dev/null; then
-        echo "QMK Toolbox is already installed."
-    else
-        echo "Installing qmk-toolbox..."
-        brew install --cask qmk-toolbox && echo "qmk-toolbox is now installed."
-    fi
-
-}
-
 case "$OS_TYPE" in
     "mac")
         install_xcode_mac
@@ -487,72 +241,39 @@ case "$OS_TYPE" in
             install_oh_my_zsh
         fi
         create_applications_dir_mac
+        setup_rc_folders
         install_brew_mac
-        install_gnu_utils_brew_mac
-        install_wget_brew_mac
-        install_rsync_brew_mac
-        install_pyenv_brew_mac
-        install_ripgrep_brew_mac
-        install_openssh_brew_mac
-        if [[ "$EMACS_INSTALL" == "True" ]]; then
-            install_emacs_brew_mac
-        fi
-        if [[ "$WARP_INSTALL" == "True" ]]; then
-            install_warp_brew_mac
-        fi
-        if [[ "$ALACRITTY_INSTALL" == "True" ]]; then
-            install_alacritty_brew_mac
-        fi
-        if [[ "$DISCORD_INSTALL" == "True" ]]; then
-            install_discord_brew_mac
-        fi
-        if [[ "$FIREFOX_INSTALL" == "True" ]]; then
-            install_firefox_brew_mac
-        fi
-        if [[ "$VSCODE_INSTALL" == "True" ]]; then
-            install_vscode_brew_mac
-        fi
-        if [[ "$BITWARDEN_INSTALL" == "True" ]]; then
-            install_bitwarden_brew_mac
-        fi
-        if [[ "$TEXSHOP_INSTALL" == "True" ]]; then
-            install_texshop_brew_mac
-        fi
-        if [[ "$STATS_INSTALL" == "True" ]]; then
-            install_stats_brew_mac
-        fi
-        if [[ "$BRAVE_INSTALL" == "True" ]]; then
-            install_brave_browser_brew_mac
-        fi
-        if [[ "$RUST_INSTALL" == "True" ]]; then
-            install_rust_brew_mac
-        fi
-        if [[ "$RAYCAST_INSTALL" == "True" ]]; then
-            install_raycast_brew_mac
-        fi
-        install_git_delta_brew_mac
-        if [[ "$SUDO_ACCESS" == "True" ]]; then
-            install_gcc_brew_mac
-            install_background_music
-            if [[ "$NORDVPN_INSTALL" == "True" ]]; then
-                install_nord_vpn_brew_mac
-            fi
-            if [[ "$NEOVIM_INSTALL" == "True" ]]; then
-                install_neovim_brew_mac
-            fi
-            if [[ "$QMK_INSTALL" == "True" ]]; then
-                install_qmk_toolbox_mac
-            fi
-        fi
-        install_warp_brew_mac
-        echo "==============================="
-        echo "Installation complete."
-        echo "Please restart your terminal."
-        echo "Or at the very least run the following command:"
-        echo "source $SHELL_RC_PATH"
-        echo "==============================="
-        ;;
+        for app in $INSTALL_LIST; do
+            case $app in
+                "gnu_utils")
+                    local GNU_UTIL_LIST="coreutils findutils libtool gsed gawk gnutls gnu-indent gnu-getopt grep"
+                    for gnuutil in GNU_UTIL_LIST; do
+                        install_brew_app $gnuutil gnu
+                    done
+                    ;;
+                "emacs");&
+                "visual-studio-code") ;&
+                "qmk-toolbox") ;&
+                "warp") ;&
+                "nordvpn") ;&
+                "bitwarden") ;&
+                "brave-browser") ;&
+                "texshop") ;&
+                background-music) ;&
+                "stats") install_brew_app $app cask;;
+                "emacs") install $app service;;
+                "git-delta") 
+                        install_brew_app $app
+                        echo "Adding git-delta to git config..."
+                        git config --global core.pager "delta --dark --line-numbers"
+                        git config --global delta.side-by-side true;;
+                *) install_brew_app $app;;
+            esac
+        done
     "linux")
+        if [[ "$SHELL_TYPE" == "zsh" ]]; then
+            install_oh_my_zsh
+        fi
         echo "Linux installation not supported yet."
         ;;
     *)
@@ -560,5 +281,12 @@ case "$OS_TYPE" in
         exit 1
         ;;
 esac
+
+echo "==============================="
+echo "Installation complete."
+echo "Please restart your terminal."
+echo "Or at the very least run the following command:"
+echo "source $SHELL_RC_PATH"
+echo "==============================="
 exit 0
 
