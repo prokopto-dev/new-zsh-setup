@@ -5,11 +5,17 @@ SHELL_RC_PATH=""
 OS_TYPE=""
 SUDO_ACCESS="False"
 
+# Colors
+RED='\033[0;31m'
+ORANGE='\033[0;33m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
 # RCFiles Folder For Subfiles
 RCFILES_PATH="$HOME/.rcfiles"
 
 # Install List For Flags with defaults
-local INSTALL_LIST="wget rsync pyenv ripgrep git-delta openssh gnu_utils"
+INSTALL_LIST="wget rsync pyenv ripgrep git-delta openssh gnu_utils"
 
 # export HOMEBREW_CASK_OPTS is used to install casks to a custom directory
 export HOMEBREW_CASK_OPTS="--appdir=$HOME/Applications"
@@ -24,7 +30,7 @@ while [[ "$#" -gt 0 ]]; do
         --stats) INSTALL_LIST="$INSTALL_LIST stats";;
         --vscode) INSTALL_LIST="$INSTALL_LIST visual-studio-code";;
         --rust) INSTALL_LIST="$INSTALL_LIST rust";;
-        --brave) INSTALL_LIST="$INSTALL_LIST brave";;
+        --brave) INSTALL_LIST="$INSTALL_LIST brave-browser";;
         --firefox) INSTALL_LIST="$INSTALL_LIST firefox";;
         --bitwarden) INSTALL_LIST="$INSTALL_LIST bitwarden";;
         --nordvpn) INSTALL_LIST="$INSTALL_LIST nordvpn";;
@@ -41,7 +47,7 @@ while [[ "$#" -gt 0 ]]; do
             INSTALL_LIST="$INSTALL_LIST stats";
             INSTALL_LIST="$INSTALL_LIST visual-studio-code";
             INSTALL_LIST="$INSTALL_LIST rust";
-            INSTALL_LIST="$INSTALL_LIST brave";
+            INSTALL_LIST="$INSTALL_LIST brave-browser";
             INSTALL_LIST="$INSTALL_LIST firefox";
             INSTALL_LIST="$INSTALL_LIST bitwarden";
             INSTALL_LIST="$INSTALL_LIST nordvpn";
@@ -51,34 +57,34 @@ while [[ "$#" -gt 0 ]]; do
             INSTALL_LIST="$INSTALL_LIST neovim";
             INSTALL_LIST="$INSTALL_LIST raycast";
             ;;
-        *) echo "Unknown parameter passed: $1"; exit 1;;
+        *) printf "Unknown parameter passed: $1\n"; exit 1;;
     esac
     shift
 done
 
 # Check default shell
 if [[ "$SHELL" == *"bash" ]]; then
-    echo "Bash is the default shell."
+    printf "${ORANGE}Bash${NC} is the default shell.\n"
     SHELL_TYPE="bash"
     SHELL_RC_PATH="$HOME/.bashrc"
 elif [[ "$SHELL" == *"zsh" ]]; then
-    echo "Zsh is the default shell."
+    printf "${ORANGE}Zsh${NC} is the default shell.\n"
     SHELL_TYPE="zsh"
     SHELL_RC_PATH="$HOME/.zshrc"
 else
-    echo "Unsupported shell - $SHELL"
+    printf "${RED}Unsupported shell - $SHELL${NC}\n"
     exit 1
 fi
 
 # First, check the OS
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    echo "Linux detected."
+    printf "${GREEN}Linux detected.${NC}\n"
     OS_TYPE="linux"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "Mac OS detected."
+    printf "${GREEN}Mac OS detected.${NC}\n"
     OS_TYPE="mac"
 else
-    echo "Unsupported OS"
+    printf "Unsupported OS\n"
     exit 1
 fi
 
@@ -86,60 +92,60 @@ fi
 if [[ "$OS_TYPE" == "linux" ]]; then
     export HOMEBREW_CASK_OPTS=""
     if groups | grep -q -w "sudo"; then
-        echo "User has sudo access."
+        printf "User has sudo access.\n"
         SUDO_ACCESS="True"
     else
-        echo "User does not have sudo access."
+        printf "User does not have sudo access.\n"
     fi
 elif [[ "$OS_TYPE" == "mac" ]]; then
     if groups | grep -q -w "admin" ; then
-        echo "User has sudo access."
+        printf "User has sudo access.\n"
         SUDO_ACCESS="True"
         export HOMEBREW_CASK_OPTS=""
     else
-        echo "User does not have sudo access."
+        printf "${RED}User does not have sudo access.${NC}\n"
     fi
 fi
 
 # Install XCode Command Line Tools If Possible
 install_xcode_mac() {
-    echo "Checking for XCode Command Line Tools..."
+    printf "Checking for ${ORANGE}XCode Command Line Tools${NC}...\n"
     if xcode-select -p &> /dev/null; then
-        echo "XCode Command Line Tools are already installed."
+        printf "${ORANGE}XCode Command Line Tools${NC} are already installed.\n"
     else
         if [[ "$SUDO_ACCESS" == "True" ]]; then
-            echo "Installing XCode Command Line Tools..."
+            printf "Installing ${ORANGE}XCode Command Line Tools${NC}...\n"
             xcode-select --install
         else
-            echo "User does not have sudo access, please contact administrator to install XCode Command Line Tools."
+            printf "${RED}User does not have sudo access, please contact administrator to install XCode Command Line Tools.${NC}\n"
             exit 1
         fi
     fi
 }
 
 install_brew_mac() {
-    echo "Checking for Homebrew..."
+    printf "Checking for ${ORANGE}Homebrew${NC}...\n"
         if [[ "$SUDO_ACCESS" == "True" ]]; then
             if command -v brew &> /dev/null; then
-                echo "Homebrew is already installed."
+                printf "${ORANGE}Homebrew${NC} is already installed.\n"
             else
-            echo "Installing Homebrew..."
+            printf "Installing ${ORANGE}Homebrew${NC}...\n"
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
             fi
         else
             if [[ -d "$HOME/.homebrew" ]]; then
-                echo "Homebrew is already installed locally for non-sudo."
+                printf "${ORANGE}Homebrew${NC} is already installed locally for non-sudo.\n"
             else
-            echo "User does not have sudo access, installing Homebrew to $HOME/.homebrew"
+            printf "User ${RED}does not have sudo access${NC}, installing Homebrew to $HOME/.homebrew\n"
             mkdir $HOME/.homebrew && curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C $HOME/.homebrew
             eval "$($HOME/.homebrew/bin/brew shellenv)"
             brew update --force --quiet
             chmod -R go-w "$(brew --prefix)/share/zsh"
-            echo "Adding Homebrew to PATH..."
+            printf "Adding ${ORANGE}Homebrew${NC} to PATH...\n"
             echo "# Add Homebrew to PATH" >> $SHELL_RC_PATH
             echo "eval \"$($HOME/.homebrew/bin/brew shellenv)\"" >> $SHELL_RC_PATH
             if [[ -d "$HOME/Applications" ]]; then
-                echo "Adding appdir optional to casks for homebrew"
+                printf "Adding appdir optional to casks for homebrew\n"
                 echo "export HOMEBREW_CASK_OPTS=\"--appdir=$HOME/Applications\"" >> $SHELL_RC_PATH
             fi
             fi
@@ -148,14 +154,14 @@ install_brew_mac() {
 
 setup_rc_folders() {
     if [[ ! -d "$HOME/.rcfiles" ]]; then
-        echo "Creating .rcfiles directory..."
+        printf "Creating ${ORANGE}.rcfiles${NC} directory...\n"
         mkdir -p $HOME/.rcfiles
     fi
 }
 
 create_applications_dir_mac() {
     if [[ ! -d "$HOME/Applications" ]]; then
-        echo "Creating Applications directory..."
+        printf "Creating ${ORANGE}Applications${NC} directory...\n"
         mkdir $HOME/Applications
     fi
 }
@@ -187,19 +193,20 @@ install_brew_app() {
         esac
         shift
     done
-    if [[ ! "$PATH" == *"$(brew --prefix)/bin"* ]]; then
+    if [[ ! "$PATH" == *"$(brew --prefix)/bin"* ]]; 
+        then
             # grep shell rc file for brew path, if not found, add it
             if ! grep -q "export PATH=\"$(brew --prefix)/bin:\$PATH\"" $SHELL_RC_PATH; then
-                echo "Adding $(brew --prefix)/bin to PATH..."
+                printf "Adding ${ORANGE}$(brew --prefix)/bin${NC} to PATH...\n"
                 echo "# Add Homebrew to PATH" >> $SHELL_RC_PATH
                 echo "export PATH=\"$(brew --prefix)/bin:\$PATH\"" >> $SHELL_RC_PATH
             fi
     fi
     if brew list $APP &> /dev/null; then
-        echo "$APP is already installed."
+        printf "${ORANGE}$APP${NC} is already installed.\n"
     else
-        echo "Installing $APP..."
-        brew install $cask_arg $APP && echo "$APP is now installed."
+        printf "Installing ${ORANGE}$APP...${NC}\n"
+        brew install $cask_arg $APP && printf "$APP is now installed.\n"
         if [[ "$GNU_FLAG" == "True" ]]; then 
             echo "export PATH=\"$(brew --prefix)/opt/$APP/libexec/gnubin:\$PATH\"" >> $RCFILES_PATH/gnurc
             echo "export MANPATH=\"$(brew --prefix)/opt/$APP/libexec/gnuman:\$MANPATH\"" >> $RCFILES_PATH/gnurc
@@ -207,27 +214,26 @@ install_brew_app() {
             if ! grep -q "source $RCFILES_PATH/gnurc" $SHELL_RC_PATH; then
                 echo "source $RCFILES_PATH/gnurc" >> $SHELL_RC_PATH
             fi
-        elif [[ "$PYENV_FLAG" == "True"]]; then
-            echo "Adding pyenv shims to PATH..."
+        elif [[ "$PYENV_FLAG" == "True" ]]; then
+            printf "Adding pyenv shims to PATH...\n"
             echo "export PATH=\"$(pyenv root)/shims:\$PATH\"" >> $RCFILES_PATH/pyenvrc
             # check if pyenvrc is already imported by shell rc file
             if ! grep -q "source $RCFILES_PATH/pyenvrc" $SHELL_RC_PATH; then
                 echo "source $RCFILES_PATH/pyenvrc" >> $SHELL_RC_PATH
             fi
-        fi
         elif [[ "$SERVICE_FLAG" == "True" ]]; then
-            echo "Starting $APP service..."
+            printf "Starting ${ORANGE}$APP${NC} service...\n"
             brew services start $APP
         fi
     fi
 }
 
 install_oh_my_zsh() {
-    echo "Checking for Oh My Zsh..."
+    printf "Checking for Oh My Zsh...\n"
     if [ -d "$HOME/.oh-my-zsh" ]; then
-        echo "Oh My Zsh is already installed."
+        printf "${ORANGE}Oh My Zsh${NC} is already installed.\n"
     else
-        echo "Installing Oh My Zsh..."
+        printf "Installing ${ORANGE}Oh My Zsh${NC}...\n"
         sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
         # Change the default prompt in oh my zsh to gianu
         sed -i 's/robbyrussell/gianu/g' $HOME/.zshrc
@@ -246,47 +252,40 @@ case "$OS_TYPE" in
         for app in $INSTALL_LIST; do
             case $app in
                 "gnu_utils")
-                    local GNU_UTIL_LIST="coreutils findutils libtool gsed gawk gnutls gnu-indent gnu-getopt grep"
-                    for gnuutil in GNU_UTIL_LIST; do
-                        install_brew_app $gnuutil gnu
+                    GNU_UTIL_LIST="coreutils findutils libtool gsed gawk gnutls gnu-indent gnu-getopt grep"
+                    for gnuutil in $GNU_UTIL_LIST; do
+                        install_brew_app $gnuutil "gnu"
                     done
                     ;;
-                "emacs");&
-                "visual-studio-code") ;&
-                "qmk-toolbox") ;&
-                "warp") ;&
-                "nordvpn") ;&
-                "bitwarden") ;&
-                "brave-browser") ;&
-                "texshop") ;&
-                background-music) ;&
-                "stats") install_brew_app $app cask;;
-                "emacs") install $app service;;
+                "emacs"|"visual-studio-code"|"qmk-toolbox"|"warp"|"nordvpn"|"bitwarden"|"brave-browser"|"texshop"|"background-music"|"stats")
+                    install_brew_app $app "cask";;
+                "emacs") install $app "service";;
                 "git-delta") 
                         install_brew_app $app
-                        echo "Adding git-delta to git config..."
+                        printf "Adding ${ORANGE}git-delta${NC} to git config...\n"
                         git config --global core.pager "delta --dark --line-numbers"
                         git config --global delta.side-by-side true;;
                 *) install_brew_app $app;;
             esac
         done
+        ;;
     "linux")
         if [[ "$SHELL_TYPE" == "zsh" ]]; then
             install_oh_my_zsh
         fi
-        echo "Linux installation not supported yet."
+        printf "Linux installation not supported yet.\n"
         ;;
     *)
-        echo "Unsupported OS"
+        printf "${RED}Unsupported OS${NC}\n"
         exit 1
         ;;
 esac
 
-echo "==============================="
-echo "Installation complete."
-echo "Please restart your terminal."
-echo "Or at the very least run the following command:"
-echo "source $SHELL_RC_PATH"
-echo "==============================="
+printf "===============================\n"
+printf "Installation complete.\n"
+printf "Please restart your terminal.\n"
+printf "Or at the very least run the following command:\n"
+printf "source $SHELL_RC_PATH\n"
+printf "===============================\n"
 exit 0
 
